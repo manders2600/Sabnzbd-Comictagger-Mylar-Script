@@ -21,10 +21,10 @@ if platform.system() == "Windows":
 elif platform.system() == "Darwin":
 	comictaggercommand = "/Applications/ComicTagger.app/Contents/MacOS/ComicTagger"
 else:
-	comictaggercommand = "/home/marktest/Downloads/comictagger-src-0.9.1-beta/comictagger.py"
+	comictaggercommand = "/path/to/comictagger/comictagger.py"
 
 ## Sets up other directories ##
-downloadpath = "/share/comics/process/THYR" 
+downloadpath = os.path.abspath(sys.argv[1]) 
 sabnzbdscriptpath = os.path.dirname( sys.argv[0] )
 comicpath = os.path.join( downloadpath , "temp" )
 unrar_folder = os.path.join( comicpath , "unrard" )
