@@ -59,8 +59,12 @@ done
 ## Clean up temp directory and move files back to original directory ##
 for file in "$comicpath"*.cbz; do
 python "$comictaggerpath"comictagger.py -s -t cr -f -o  "$file"
-##  Uncomment the below line and comment out the above line for Mac OSX users  ##
+python "$comictaggerpath"comictagger.py -s -t cbl -f -o  "$file"
+
+##  Uncomment the two lines below and comment out the two lines above for Mac OSX users  ##
 ##  /Applications/ComicTagger.app/Contents/MacOS/ComicTagger -s -t cr -f -o  "$file"
+##  /Applications/ComicTagger.app/Contents/MacOS/ComicTagger -s -t cbl -f -o  "$file"
+
 mv "$file" "$downloadpath"
 done
 cd "$sabnzbdscriptpath"
