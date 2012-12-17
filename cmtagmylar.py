@@ -19,7 +19,7 @@ import subprocess
 if platform.system() == "Windows":
   comictagger_cmd = "C:\Program Files\ComicTagger\comictagger.exe"
   # http://www.win-rar.com/download.html
-  unrar_cmd =       "C:\ProgramFiles\WinRAR\unrar.exe"
+  unrar_cmd =       "C:\Program Files\WinRAR\unrar.exe"
   # http://stahlforce.com/dev/zip.exe
   zip_cmd =         "zip.exe"
   
