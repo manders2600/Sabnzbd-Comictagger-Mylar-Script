@@ -17,21 +17,17 @@ import subprocess
 # ( User may have to modify, depending on their setup, but these are some guesses for now )
 
 if platform.system() == "Windows":
-  comictagger_cmd = "C:\Program Files\ComicTagger\comictagger.exe"
+  comictagger_cmd = "C:\Program Files (x86)\ComicTagger\comictagger.exe"
   # http://www.win-rar.com/download.html
-  unrar_cmd =       "C:\Program Files\WinRAR\unrar.exe"
-  # http://stahlforce.com/dev/zip.exe
-  zip_cmd =         "zip.exe"
+  unrar_cmd =       "C:\Program Files\WinRAR\UnRAR.exe"
   
 elif platform.system() == "Darwin":  #Mac OS X
   comictagger_cmd = "/Applications/ComicTagger.app/Contents/MacOS/ComicTagger"
   unrar_cmd =       "/usr/local/bin/unrar"
-  zip_cmd =         "/usr/bin/zip"
   
 else:
   comictagger_cmd = "/path/to/comictagger/comictagger.py"
   unrar_cmd =       "/usr/bin/unrar"
-  zip_cmd =         "/usr/bin/zip"
 
 if not os.path.exists( comictagger_cmd ):
   print "ERROR:  can't find the ComicTagger program: {0}".format( comictagger_cmd )
@@ -39,17 +35,12 @@ if not os.path.exists( comictagger_cmd ):
   sys.exit( 1 )
 
 file_conversion = True
-if not os.path.exists( unrar_cmd ) or not os.path.exists( zip_cmd ):
-  print "WARNING:  can't find the zip or unrar command, or both."
-  print "          File conversion not available"
-  print "          You probably need to edit this script, or install the missing tools, or both!"
-  file_conversion = False
-
 file_extension_fixing = True
 if not os.path.exists( unrar_cmd ):
-  print "WARNING:  can't find the unrar command" 
-  print "          Some file extension fixing not available"
-  print "          You probably need to edit this script, or install the unrar tool, or both!"
+  print "WARNING:  can't find the unrar command."
+  print "          File conversion and extension fixing not available"
+  print "          You probably need to edit this script, or install the missing tool, or both!"
+  file_conversion = False
   file_extension_fixing = False
 
 
@@ -79,23 +70,23 @@ for f in filename_list:
 ## Changes filetype extensions when needed ##
 cbr_list = glob.glob( os.path.join( comicpath, "*.cbr" ) )
 for f in cbr_list:
-  if zipfile.is_zipfile( f ):		
-	base = os.path.splitext( f )[0]
-	shutil.move( f, base + ".cbz" )
-	print "{0}: renaming {1} to be a cbz".format( scriptname, os.path.basename( f ) )
+  if zipfile.is_zipfile( f ):        
+    base = os.path.splitext( f )[0]
+    shutil.move( f, base + ".cbz" )
+    print "{0}: renaming {1} to be a cbz".format( scriptname, os.path.basename( f ) )
 
 if file_extension_fixing:
   cbz_list = glob.glob( os.path.join( comicpath, "*.cbz" ) )
   for f in cbz_list:
-	try:
-	  rar_test_cmd_output = "is not RAR archive" #default, in case of error
-	  rar_test_cmd_output = subprocess.check_output( [ unrar_cmd, "t", f ] )
-	except:
-	  pass
-	if not "is not RAR archive" in rar_test_cmd_output:
-	  base = os.path.splitext( f )[0]
-	  shutil.move( f, base + ".cbr" )
-	  print "{0}: renaming {1} to be a cbr".format( scriptname, os.path.basename( f ) )
+    try:
+      rar_test_cmd_output = "is not RAR archive" #default, in case of error
+      rar_test_cmd_output = subprocess.check_output( [ unrar_cmd, "t", f ] )
+    except:
+      pass
+    if not "is not RAR archive" in rar_test_cmd_output:
+      base = os.path.splitext( f )[0]
+      shutil.move( f, base + ".cbr" )
+      print "{0}: renaming {1} to be a cbr".format( scriptname, os.path.basename( f ) )
 
 # Now rename all CBR files to RAR
 cbr_list = glob.glob( os.path.join( comicpath, "*.cbr" ) )
@@ -107,28 +98,34 @@ for f in cbr_list:
 if file_conversion:
   rar_list = glob.glob( os.path.join( comicpath, "*.rar" ) )
   for f in rar_list:
-	print "{0}: converting {1} to be zip format".format( scriptname, os.path.basename( f ) )
-	basename = os.path.splitext( f )[0]
-	zipname = basename + ".cbz"
+    print "{0}: converting {1} to be zip format".format( scriptname, os.path.basename( f ) )
+    basename = os.path.splitext( f )[0]
+    zipname = basename + ".cbz"
 
-	# Move into the folder where we will be unrar-ing things
-	os.makedirs( unrar_folder )
-	os.chdir( unrar_folder )
+    # Move into the folder where we will be unrar-ing things
+    os.makedirs( unrar_folder )
+    os.chdir( unrar_folder )
 
-	subprocess.Popen( [ unrar_cmd, "x", f ] ).communicate()  # Probably not portable to Windows (need path of unrar.exe)
-	#os.unlink( f )
-	subprocess.Popen( [ zip_cmd, "-rm", zipname, "." ] ).communicate()  # Not portable to Windows (no command-line zip!!)
+    # Extract and zip up
+    subprocess.Popen( [ unrar_cmd, "x", f ] ).communicate()
+    shutil.make_archive( basename, "zip", unrar_folder )
 
-	# get out of unrar folder and clean up
-	os.chdir( comicpath )
-	shutil.rmtree( unrar_folder )
+    # get out of unrar folder and clean up
+    os.chdir( comicpath )
+    #shutil.rmtree( unrar_folder )
+    
+    ## Changes zip to cbz
+  zip_list = glob.glob( os.path.join( comicpath, "*.zip" ) )
+  for f in zip_list:
+    base = os.path.splitext( f )[0]
+    shutil.move( f, base + ".cbz" )
 
 ## Tag each CBZ, and move it back to original directory ##
 cbz_list = glob.glob( os.path.join( comicpath, "*.cbz" ) )
 for f in cbz_list:
-	subprocess.Popen( [ comictagger_cmd, "-s", "-t", "cr", "-f", "-o", "--verbose", "--nooverwrite", f ] ).communicate()
-	subprocess.Popen( [ comictagger_cmd, "-s", "-t", "cbl", "-f", "-o", "--verbose", "--nooverwrite", f ] ).communicate()
-	shutil.move( f, downloadpath )
+    subprocess.Popen( [ comictagger_cmd, "-s", "-t", "cr", "-f", "-o", "--verbose", "--nooverwrite", f ] ).communicate()
+    subprocess.Popen( [ comictagger_cmd, "-s", "-t", "cbl", "-f", "-o", "--verbose", "--nooverwrite", f ] ).communicate()
+    shutil.move( f, downloadpath )
 
 ## Clean up temp directory  ##
 os.chdir( sabnzbdscriptpath )
