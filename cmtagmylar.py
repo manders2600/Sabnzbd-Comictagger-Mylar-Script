@@ -132,4 +132,3 @@ os.chdir( sabnzbdscriptpath )
 shutil.rmtree( comicpath )
 
 ## Will Run Mylar Post=processing In Future ##
-subprocess.Popen("autoProcessComics.py 1 2 3 4 5 6 7", shell=True)
