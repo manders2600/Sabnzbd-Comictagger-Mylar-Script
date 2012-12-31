@@ -17,8 +17,12 @@ import subprocess
 # ( User may have to modify, depending on their setup, but these are some guesses for now )
 
 if platform.system() == "Windows":
-  comictagger_cmd = "C:\Program Files (x86)\ComicTagger\comictagger.exe"
-  # http://www.win-rar.com/download.html
+  (x, y) = platform.architecture()
+  if x == "64bit":
+    comictagger_cmd = "C:\Program Files (x86)\ComicTagger\comictagger.exe"
+    # http://www.win-rar.com/download.html
+  else:
+    comictagger_cmd = "C:\Program Files\ComicTagger\comictagger.exe"
   unrar_cmd =       "C:\Program Files\WinRAR\UnRAR.exe"
   
 elif platform.system() == "Darwin":  #Mac OS X
