@@ -19,3 +19,7 @@ This does the following:
 3.  Inserts comicvine metadata compliant with both ComicRack and ComicZeal
 
 4.  Calls the normal mylar post-processing
+
+
+Comictagger can be found here:  http://code.google.com/p/comictagger/
+Mylar can be found here:   https://github.com/evilhero/mylar
