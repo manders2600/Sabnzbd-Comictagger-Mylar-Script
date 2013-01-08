@@ -4,9 +4,8 @@ Sabnzbd-Comictagger-Mylar-Script
 A python script to post-process comics
 
 
-The cmtaggermylar.py script must be placed in your sabnzbd scripts directory in order to process and tag comics once downloaded by sabnzbd.
 
-The provided ComicRN.py script should replace the one included with the Mylar install, should you also be using Mylar.
+Right now, this script only works when using the development version of mylar in my repository, though there is a pull request to have these changes merged into evilhero's repo.  Simply enter the path to cmtagmylar.py in the "Pre-scripts" box on the mylar config page, and you should be good to go.
 
 You may have to manually set the directory for your comictagger installation by editing the cmtagger.py file on the line appropriate for your OS (though some best guesses are used by default).
 
