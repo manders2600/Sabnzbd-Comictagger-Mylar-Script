@@ -50,7 +50,7 @@ if not os.path.exists( unrar_cmd ):
 
 ## Sets up other directories ##
 scriptname = os.path.basename( sys.argv[0] )
-downloadpath = os.path.abspath(sys.argv[1]) 
+downloadpath = os.path.abspath(sys.argv[3]) 
 sabnzbdscriptpath = os.path.dirname( sys.argv[0] )
 comicpath = os.path.join( downloadpath , "temp" )
 unrar_folder = os.path.join( comicpath , "unrard" )
